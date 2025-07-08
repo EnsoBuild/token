@@ -2,9 +2,7 @@
 pragma solidity ^0.8.13;
 
 import { TokenDeployer } from "../script/TokenDeployer.s.sol";
-
 import { EnsoToken } from "../src/EnsoToken.sol";
-
 import { TestTokenUpgrade } from "../src/test/TestTokenUpgrade.sol";
 import { Test, console } from "forge-std/Test.sol";
 import { PausableUpgradeable } from "openzeppelin-contracts-upgradeable/utils/PausableUpgradeable.sol";

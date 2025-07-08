@@ -54,6 +54,9 @@ contract EnsoToken is
         _unpause();
     }
 
+    /**
+     * @inheritdoc ERC20PermitUpgradeable
+     */
     function nonces(address owner)
         public
         view
@@ -65,6 +68,9 @@ contract EnsoToken is
         return ERC20PermitUpgradeable.nonces(owner);
     }
 
+    /**
+     * @inheritdoc ERC20Upgradeable
+     */
     function _update(
         address from,
         address to,
