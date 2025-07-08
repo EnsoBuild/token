@@ -1,0 +1,26 @@
+[profile.default]
+auto_detect_solc = false
+# NOTE: by excluding the metadata hash we make sure future contracts can be partially modified without altering their bytecode.
+bytecode_hash = "none" # Disables the metadata
+cbor_metadata = false # Diasbles the metadata
+evm_version = "cancun"
+libs = ["lib"]
+optimizer = true
+optimizer-runs = 200
+out = "out"
+script = "script"
+solc = "0.8.28"
+src = "src"
+test = "test"
+
+[fmt]
+bracket_spacing = true
+contract_new_lines = false
+int_types = "long"
+line_length = 120
+multiline_func_header = "all"
+number_underscore = "thousands"
+quote_style = "double"
+sort_imports = true
+tab_width = 4
+wrap_comments = true
