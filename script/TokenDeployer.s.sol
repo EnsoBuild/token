@@ -16,7 +16,7 @@ contract TokenDeployer is Script {
 
     uint256 public TOTAL_SUPPLY = 100_000_000 * WEI;
     uint256 public COINLIST_SHARE = (TOTAL_SUPPLY * 400) / BASIS_POINTS;
-    uint256 public COINLIST_FEE_SHARE = (TOTAL_SUPPLY * 45) / BASIS_POINTS;
+    uint256 public COINLIST_FEE_SHARE = (TOTAL_SUPPLY * 40) / BASIS_POINTS;
     uint256 public OWNER_SHARE = TOTAL_SUPPLY - COINLIST_SHARE - COINLIST_FEE_SHARE;
 
     function deploy() public returns (ERC1967Proxy token, EnsoToken implementation) {
