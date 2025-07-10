@@ -22,6 +22,14 @@ contract TokenTest is Test {
         token = EnsoToken(address(proxy));
     }
 
+    function test_Decimals() public view {
+        assertEq(token.decimals(), 18);
+    }
+
+    function test_TotalSupply() public view {
+        assertEq(token.totalSupply(), deployer.TOTAL_SUPPLY());
+    }
+
     function test_PausedFail() public {
         vm.startPrank(deployer.COINLIST());
         vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);

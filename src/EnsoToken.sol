@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+import { Distribution } from "./Distribution.sol";
 import { OwnableUpgradeable } from "openzeppelin-contracts-upgradeable/access/OwnableUpgradeable.sol";
 import { UUPSUpgradeable } from "openzeppelin-contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import { ERC20Upgradeable } from "openzeppelin-contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
@@ -12,11 +13,6 @@ import {
 } from "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 import { ERC20VotesUpgradeable } from
     "openzeppelin-contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
-
-struct Distribution {
-    address account;
-    uint256 amount;
-}
 
 contract EnsoToken is
     ERC20Upgradeable,
@@ -35,21 +31,21 @@ contract EnsoToken is
         external
         initializer
     {
-        __ERC20_init(name, symbol);
-        __ERC20Permit_init(name);
-        __ERC20Votes_init();
-        __Ownable_init(owner);
-        __UUPSUpgradeable_init();
+        __ERC20_init_unchained(name, symbol);
+        __EIP712_init_unchained(name, "1");
+        __Ownable_init_unchained(owner);
         for (uint256 i = 0; i < distribution.length; ++i) {
             _mint(distribution[i].account, distribution[i].amount);
         }
         _pause();
     }
 
+    // @notice Pause transfer functions
     function pause() external onlyOwner {
         _pause();
     }
 
+    // @notice Unpause transfer functions
     function unpause() external onlyOwner {
         _unpause();
     }
@@ -84,5 +80,7 @@ contract EnsoToken is
         ERC20VotesUpgradeable._update(from, to, value);
     }
 
-    function _authorizeUpgrade(address) internal override onlyOwner { }
+    function _authorizeUpgrade(address) internal override onlyOwner {
+        // all necessary validation is handled by the onlyOwner modifier
+    }
 }

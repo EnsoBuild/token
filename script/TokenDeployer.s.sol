@@ -1,19 +1,23 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import { Distribution, EnsoToken } from "../src/EnsoToken.sol";
-import { Script } from "forge-std/Script.sol";
+import { Distribution } from "../src/Distribution.sol";
+import { EnsoToken } from "../src/EnsoToken.sol";
+import { Script, console } from "forge-std/Script.sol";
 import { ERC1967Proxy } from "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract TokenDeployer is Script {
     address public OWNER = 0x0676675F4fddC2f572cf0CdDaAf0a6b31841CDaC; // TODO
-    address public COINLIST = 0x6969696969696969696969696969696969696969; // TODO
+    address public COINLIST = 0x477F48C93738C0A3a49E365c90Dc56e5466544Df;
+    address public COINLIST_FEE = 0x9CA33da9D11cCb2E2b0870f83C0f963573B74A43;
 
-    uint256 WEI = 10 ** 18;
-    uint256 TOTAL_SUPPLY = 100_000_000 * WEI;
-    uint256 BASIS_POINTS = 10_000;
-    uint256 COINLIST_SHARE = (TOTAL_SUPPLY * 440) / BASIS_POINTS;
-    uint256 OWNER_SHARE = TOTAL_SUPPLY - COINLIST_SHARE;
+    uint256 internal WEI = 10 ** 18;
+    uint256 internal BASIS_POINTS = 10_000;
+
+    uint256 public TOTAL_SUPPLY = 100_000_000 * WEI;
+    uint256 public COINLIST_SHARE = (TOTAL_SUPPLY * 400) / BASIS_POINTS;
+    uint256 public COINLIST_FEE_SHARE = (TOTAL_SUPPLY * 45) / BASIS_POINTS;
+    uint256 public OWNER_SHARE = TOTAL_SUPPLY - COINLIST_SHARE - COINLIST_FEE_SHARE;
 
     function deploy() public returns (ERC1967Proxy token, EnsoToken implementation) {
         implementation = new EnsoToken();
@@ -22,9 +26,10 @@ contract TokenDeployer is Script {
 
         string memory name = "Enso";
         string memory symbol = "ENSO";
-        Distribution[] memory distribution = new Distribution[](2);
+        Distribution[] memory distribution = new Distribution[](3);
         distribution[0] = Distribution(OWNER, OWNER_SHARE);
         distribution[1] = Distribution(COINLIST, COINLIST_SHARE);
+        distribution[2] = Distribution(COINLIST_FEE, COINLIST_FEE_SHARE);
         bytes memory initializationCall =
             abi.encodeWithSelector(EnsoToken.initialize.selector, name, symbol, OWNER, distribution);
         token = new ERC1967Proxy(address(implementation), initializationCall);
