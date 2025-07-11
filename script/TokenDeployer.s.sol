@@ -7,7 +7,7 @@ import { Script, console } from "forge-std/Script.sol";
 import { ERC1967Proxy } from "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract TokenDeployer is Script {
-    address public OWNER = 0x0676675F4fddC2f572cf0CdDaAf0a6b31841CDaC; // TODO
+    address public OWNER = 0x715B1ddF5d6dA6846eaDB72d3D6f9d93148d0bb0;
     address public COINLIST = 0x477F48C93738C0A3a49E365c90Dc56e5466544Df;
     address public COINLIST_FEE = 0x9CA33da9D11cCb2E2b0870f83C0f963573B74A43;
 
@@ -20,7 +20,7 @@ contract TokenDeployer is Script {
     uint256 public OWNER_SHARE = TOTAL_SUPPLY - COINLIST_SHARE - COINLIST_FEE_SHARE;
 
     function deploy() public returns (ERC1967Proxy token, EnsoToken implementation) {
-        implementation = new EnsoToken();
+        implementation = new EnsoToken{ salt: "EnsoTokenV1" }();
         Distribution[] memory nullDistribution = new Distribution[](0);
         implementation.initialize("", "", address(implementation), nullDistribution);
 
@@ -32,7 +32,7 @@ contract TokenDeployer is Script {
         distribution[2] = Distribution(COINLIST_FEE, COINLIST_FEE_SHARE);
         bytes memory initializationCall =
             abi.encodeWithSelector(EnsoToken.initialize.selector, name, symbol, OWNER, distribution);
-        token = new ERC1967Proxy(address(implementation), initializationCall);
+        token = new ERC1967Proxy{ salt: "EnsoToken" }(address(implementation), initializationCall);
     }
 
     function run() public returns (ERC1967Proxy token, EnsoToken implementation) {

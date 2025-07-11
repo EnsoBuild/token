@@ -19,6 +19,7 @@ contract TokenTest is Test {
     function setUp() public {
         deployer = new TokenDeployer();
         (proxy,) = deployer.deploy();
+        console.log("token address: ", address(proxy));
         token = EnsoToken(address(proxy));
     }
 
@@ -28,6 +29,11 @@ contract TokenTest is Test {
 
     function test_TotalSupply() public view {
         assertEq(token.totalSupply(), deployer.TOTAL_SUPPLY());
+    }
+
+    function test_OwnerBalance() public view {
+        uint256 balance = token.balanceOf(deployer.OWNER());
+        assertEq(balance, 95_600_000 * 10**18);
     }
 
     function test_PausedFail() public {
