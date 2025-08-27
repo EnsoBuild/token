@@ -33,7 +33,7 @@ contract TokenTest is Test {
 
     function test_OwnerBalance() public view {
         uint256 balance = token.balanceOf(deployer.OWNER());
-        assertEq(balance, 95_600_000 * 10**18);
+        assertEq(balance, 95_600_000 * 10 ** 18);
     }
 
     function test_PausedFail() public {
