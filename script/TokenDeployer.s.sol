@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import { Distribution } from "../src/Distribution.sol";
+import { Distribution } from "../src/libraries/Distribution.sol";
 import { EnsoToken } from "../src/EnsoToken.sol";
 import { Script, console } from "forge-std/Script.sol";
 import { ERC1967Proxy } from "openzeppelin-contracts/proxy/ERC1967/ERC1967Proxy.sol";
