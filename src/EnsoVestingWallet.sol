@@ -7,7 +7,7 @@ pragma solidity ^0.8.20;
 import { SafeERC20, IERC20 } from "openzeppelin-contracts/token/ERC20/utils/SafeERC20.sol";
 import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
 
-contract EnsoVesting {
+contract EnsoVestingWallet is Ownable {
     using SafeERC20 for IERC20;
 
     event TokenReleased(uint256 amount);
@@ -28,17 +28,17 @@ contract EnsoVesting {
     error NotRevocable();
     error NotRevoker(address sender, address revoker);
 
-    constructor(address token, address revoker, address beneficiary, uint64 startTimestamp, uint64 durationSeconds, uint64 cliffSeconds) Ownable(beneficiary) {
+    constructor(IERC20 token, address revoker, address beneficiary, uint64 startTimestamp, uint64 durationSeconds, uint64 cliffSeconds) Ownable(beneficiary) {
         if (cliffSeconds > durationSeconds) {
             revert InvalidCliffDuration(cliffSeconds, durationSeconds);
         }
         _start = startTimestamp;
         _duration = durationSeconds;
         _cliff = startTimestamp + cliffSeconds;
-        _token = IERC20(token);
+        _token = token;
         if (revoker != address(0)) {
             _revoker = revoker;
-            _revocable = true;
+            revocable = true;
         }
     }
 
@@ -66,21 +66,21 @@ contract EnsoVesting {
      /**
      * @dev Getter for the cliff timestamp.
      */
-    function cliff() external view virtual returns (uint256) {
+    function cliff() public view virtual returns (uint256) {
         return _cliff;
     }
 
     /**
      * @dev Getter for the token address.
      */
-    function token() external view returns (address) {
+    function token() public view returns (address) {
         return address(_token);
     }
 
     /**
      * @dev Getter for the revoker address.
      */
-    function revoker() external view returns (address) {
+    function revoker() public view returns (address) {
         return _revoker;
     }
 
@@ -125,7 +125,7 @@ contract EnsoVesting {
         revoked = true;
         uint256 amount = _token.balanceOf(address(this));
         _token.safeTransfer(receiver, amount);
-        emit Revoked(amount);
+        emit VestingRevoked(amount, receiver);
     }
 
     /**
